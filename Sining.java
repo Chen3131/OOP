@@ -6,9 +6,7 @@ public class Sining {
         private static UserManager userManager = new UserManager();
         private static VehicleManager vManager = new VehicleManager();
 
-        // private static Admin admin = new Admin();
-        private static int admin_Pin = 1234;
-        private static String admin_username = "admin";
+        private static Admin admin = new Admin("admin", 1234);
                
                 public static void main(String[] args) {
                     while(true){
@@ -39,7 +37,6 @@ public class Sining {
                                 System.out.println("Invalid option");
                                 break;
                         }
-             
             }
         }
 
@@ -51,12 +48,10 @@ public class Sining {
             int memberID = sc.nextInt();
             sc.nextLine();
 
-
             if (!userManager.CheckUser(name, memberID)) {
                 System.out.println("No account found with the provided Name and Membership Pin.");
                 return;
             }
-       
        
             System.out.println("Are you sure you want to DELETE your account? [1] Yes [2] No");
             int option = sc.nextInt();
@@ -69,8 +64,7 @@ public class Sining {
                 System.out.println("From SINNIG Car Rental");
             }
         }
-       
-
+    
         private static void register() {
             System.out.print("Enter your name: ");
             String name = sc.nextLine();
@@ -95,7 +89,6 @@ public class Sining {
             userManager.registerUser(name, age, email);
         }
        
-   
         private static void login() {
             
             System.out.print("Enter your name: ");
@@ -103,11 +96,18 @@ public class Sining {
             System.out.print("Enter your membership Pin: ");
             int memberID = sc.nextInt();
             sc.nextLine();
-            menuUser();
-
-            if(admin_username.equals(name) && admin_Pin == memberID) {
+            
+            if(admin.getAdminUsername().equals(name) && admin.getAdminPin() == memberID) {
                 System.out.println("Admin login successful.");
                 adminMenu();
+            } else {
+                if(userManager.CheckUser(name, memberID)) {
+                    userManager.LoginUser(name, memberID);
+                    System.out.println("Login successful.\n");
+                    menuUser();
+                } else {
+                    System.out.println("Invalid credentials, please try again.\n");
+                }
             }
 
             userManager.LoginUser(name, memberID);
@@ -154,6 +154,7 @@ public class Sining {
             break;
 
             case 2:
+                userManager.returnCar(vManager);
                 break;
 
             case 3:
@@ -165,5 +166,4 @@ public class Sining {
 
         }
     }
-
 }
