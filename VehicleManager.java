@@ -8,7 +8,7 @@ public class VehicleManager {
     private static int vehicleId = 1;
     private Scanner input = new Scanner(System.in);
 
-    private void saveToFile() {
+    public void saveToFile() {
         try(BufferedWriter bWriter = new BufferedWriter(new FileWriter(filename))) {
             for(Vehicle vehicle : vehicleList) {
                 bWriter.write("ID: " + vehicle.getId() + "\n" 
@@ -62,7 +62,7 @@ public class VehicleManager {
             System.out.print("Enter ID: ");
             int idRemove = input.nextInt();
             input.nextLine();
-
+ 
             Vehicle vehicleRemove = findVehicleById(idRemove);
 
             if(vehicleRemove != null) {
@@ -116,7 +116,6 @@ public class VehicleManager {
             System.out.println("Vehicle updated.\n");
         }
     }
-
 
     public ArrayList<Vehicle> getVehicleList() {
         return vehicleList;
