@@ -1,13 +1,15 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-
 
 public class UserManager {
 
     private ArrayList<User> userList = new ArrayList<>();
     private Random random = new Random();
     private static VehicleManager vmanager = new VehicleManager();
+    private static final String filename = "Vehicles.txt";
+
 
     public void registerUser(String name, int age, String email) {
         for (User user : userList) {
@@ -17,7 +19,7 @@ public class UserManager {
             }
         }
 
-        User newUser = new User();
+        User newUser = new User(name, email, age);
         newUser.setName(name);
         newUser.setAge(age);
         newUser.setEmail(email);
@@ -29,15 +31,17 @@ public class UserManager {
         System.out.println("Here is your Membership Pin: " + newUser.getMemberID());
     }
 
+
     public void LoginUser(String name, int memberID) {
         for (User user : userList) {
             if (user.getName().equals(name) && user.getMemberID() == memberID) {
-                System.out.println("Welcome back, " + name + "!");
-                return;
+                System.out.println("Welcome, " + name + "!");
+            } 
+            else{
+                System.out.println("Invalid name or Membership Pin.");
             }
-        }
-        System.out.println("Invalid name or Membership Pin.");
-       
+        } 
+        
     }
 
     public boolean CheckUser(String name, int memberID) {
@@ -100,6 +104,33 @@ public class UserManager {
         } else {
             System.out.println("Rental canceled.");
         }
-    }    
+    }
     
+    public void returnCar(VehicleManager vehicleManager){
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Enter the ID of the car that you want to return: ");
+        int vehicleId = input.nextInt();
+        input.nextLine();
+
+        Vehicle returnVehicle = vehicleManager.findVehicleById(vehicleId);
+
+        if(returnVehicle == null){
+            System.out.println("Invalid car ID. Try Again.");
+            return;
+        }
+
+        System.out.println("Enter the number of extended days of rented car: ");
+        int extendedDays = input.nextInt();
+        input.nextLine();
+
+        if(extendedDays > 0){
+            double extraCharge = extendedDays * returnVehicle.getRentRate();
+            System.out.printf("You have an extra charge of $%.2f for %d extra days.%n", extraCharge, extendedDays);
+        }
+
+        System.out.println("Car Returned. Thank You For Renting!!!");
+        returnVehicle.setQuantity(returnVehicle.getQuantity() - 1);
+        vehicleManager.saveToFile();
+    }
 }
